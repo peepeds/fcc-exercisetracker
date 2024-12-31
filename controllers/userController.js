@@ -13,4 +13,16 @@ const user = async (req, res) => {
     res.json({username, _id: user._id});
 };
 
-module.exports = {user};
+const allUser = async (req, res) => {
+    const allUser = await userModel.find({});
+
+    const allUserLog = allUser.map((item)=>{
+        return {
+            username: item.username,
+            _id: item._id
+        }
+    })
+    res.json(allUserLog);
+}
+
+module.exports = {user, allUser};

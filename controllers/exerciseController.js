@@ -40,11 +40,16 @@ const exercise = async (req, res) => {
 const exerciseLog = async (req, res) => {
     const userId = req.params._id;
     let {from, to, limit} = req.query;
+
     if(!from) from = new Date(0);
     
     if(!to) to = new Date();
 
-    const checkUser = await exerciseModel.find({
+    const checkUser = await userModel.find({_id: userId});
+    const _id = checkUser[0]._id;
+    const username = checkUser[0].username;
+
+    const checExercise = await exerciseModel.find({
         userId  : userId,
         date: {
             $gte: new Date(from),
@@ -52,9 +57,11 @@ const exerciseLog = async (req, res) => {
         }
     }).limit(parseInt(limit));
 
-    const count = checkUser.length;
+    const count = checExercise.length;
+    
+    console.log({checExercise});
 
-    const log = checkUser.map((item) => {
+    const log = checExercise.map((item) => {
         return {
             description: item.description,
             duration: item.duration,
@@ -63,12 +70,11 @@ const exerciseLog = async (req, res) => {
     });
    
     return res.json({
-        "_id": userId,
-        "username": checkUser[0].username,
+        _id,
+        username,
         count,
         log
     })
 };
-
 
 module.exports = {exercise, exerciseLog};
