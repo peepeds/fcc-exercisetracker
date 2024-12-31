@@ -29,10 +29,10 @@ const exercise = async (req, res) => {
     }).save();
 
     res.json({
-        _id: userId,
+        _id,
         username,
         date: newDate,
-        duration,
+        duration: parseInt(duration),
         description
     });
 };
@@ -42,7 +42,6 @@ const exerciseLog = async (req, res) => {
     let {from, to, limit} = req.query;
 
     if(!from) from = new Date(0);
-    
     if(!to) to = new Date();
 
     const checkUser = await userModel.find({_id: userId});
@@ -50,7 +49,7 @@ const exerciseLog = async (req, res) => {
     const username = checkUser[0].username;
 
     const checExercise = await exerciseModel.find({
-        userId  : userId,
+        userId,
         date: {
             $gte: new Date(from),
             $lte: new Date(to)
