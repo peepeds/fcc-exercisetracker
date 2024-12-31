@@ -5,20 +5,24 @@ const exercise = async (req, res) => {
     const { description, duration, date} = req.body;
     const userId = req.params._id;
 
+    const checkDuration = parseInt(duration); 
+    if(!checkDuration){
+        return res.status(400).json({error: 'Duration must be a number'});
+    }
+
+    if(userId.length !== 24 ){
+        return res.status(400).json({error: 'Invalid userId'});
+    }
+
     const checkUser = await userModel.findById(userId);
     if(!checkUser){
-        return res.json({error: 'User not found'});
+        return res.status(404).json({error: 'User not found'});
     }
     
     const username = checkUser.username;
 
     let newDate;
-    if(!date){
-        newDate = new Date().toDateString();
-        console.log({newDate});
-    } else {
-        newDate = new Date(date).toDateString();
-    }
+    (!date) ? newDate = new Date().toDateString() : newDate = new Date(date).toDateString();
 
     const newExercise = await new exerciseModel({
         userId,
@@ -48,7 +52,7 @@ const exerciseLog = async (req, res) => {
     console.log({checkUser});
 
     if(checkUser.length === 0){
-        return res.json({error: 'User not found'});
+        return res.send(404).json({error: 'User not found'});
     };
 
     const _id = checkUser[0]._id;
@@ -63,8 +67,6 @@ const exerciseLog = async (req, res) => {
     }).limit(parseInt(limit));
 
     const count = checExercise.length;
-    
-    // console.log({checExercise});
 
     const log = checExercise.map((item) => {
         return {
