@@ -9,7 +9,7 @@ const exercise = async (req, res) => {
     if(!checkUser){
         return res.json({error: 'User not found'});
     }
-
+    
     const username = checkUser.username;
 
     let newDate;
