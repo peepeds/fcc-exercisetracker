@@ -29,7 +29,7 @@ const exercise = async (req, res) => {
     }).save();
 
     res.json({
-        _id,
+        _id: userId,
         username,
         date: newDate,
         duration: parseInt(duration),
@@ -45,6 +45,12 @@ const exerciseLog = async (req, res) => {
     if(!to) to = new Date();
 
     const checkUser = await userModel.find({_id: userId});
+    console.log({checkUser});
+
+    if(checkUser.length === 0){
+        return res.json({error: 'User not found'});
+    };
+
     const _id = checkUser[0]._id;
     const username = checkUser[0].username;
 
@@ -58,7 +64,7 @@ const exerciseLog = async (req, res) => {
 
     const count = checExercise.length;
     
-    console.log({checExercise});
+    // console.log({checExercise});
 
     const log = checExercise.map((item) => {
         return {
